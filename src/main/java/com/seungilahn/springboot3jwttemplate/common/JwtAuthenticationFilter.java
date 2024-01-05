@@ -1,4 +1,4 @@
-package com.seungilahn.springboot3jwttemplate.config.auth;
+package com.seungilahn.springboot3jwttemplate.common;
 
 import com.seungilahn.springboot3jwttemplate.auth.application.JwtService;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;

@@ -1,4 +1,4 @@
-package com.seungilahn.springboot3jwttemplate.config;
+package com.seungilahn.springboot3jwttemplate;
 
 import com.seungilahn.springboot3jwttemplate.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
 @Configuration
-public class ApplicationConfig {
+public class SpringBoot3JwtTemplateConfiguration {
 
     private final UserRepository repository;
 

@@ -1,6 +1,6 @@
-package com.seungilahn.springboot3jwttemplate.config;
+package com.seungilahn.springboot3jwttemplate;
 
-import com.seungilahn.springboot3jwttemplate.config.auth.JwtAuthenticationFilter;
+import com.seungilahn.springboot3jwttemplate.common.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfiguration {
 
     private final static String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/h2-console/**"};
 
