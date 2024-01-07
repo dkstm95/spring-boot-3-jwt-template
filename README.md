@@ -30,6 +30,7 @@
 │   │   │                   ├── port
 │   │   │                       ├── in
 │   │   │                       └── out
+│   │   │                   └── service
 │   │   │               └── domain
 ```
 
