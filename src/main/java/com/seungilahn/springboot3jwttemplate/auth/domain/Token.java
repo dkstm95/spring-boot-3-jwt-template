@@ -4,11 +4,12 @@ import com.seungilahn.springboot3jwttemplate.common.BaseTimeEntity;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 public class Token extends BaseTimeEntity {
 
@@ -33,23 +34,8 @@ public class Token extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder(access = AccessLevel.PRIVATE)
-    private Token(String token, TokenType tokenType, boolean revoked, boolean expired, User user) {
-        this.token = token;
-        this.tokenType = tokenType;
-        this.revoked = revoked;
-        this.expired = expired;
-        this.user = user;
-    }
-
     public static Token createBearerToken(String token, User user) {
-        return Token.builder()
-                .token(token)
-                .tokenType(TokenType.BEARER)
-                .revoked(false)
-                .expired(false)
-                .user(user)
-                .build();
+        return new Token(null, token, TokenType.BEARER, false, false, user);
     }
 
     public boolean isValid() {
