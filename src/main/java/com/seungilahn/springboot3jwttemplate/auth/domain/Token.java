@@ -38,10 +38,6 @@ public class Token extends BaseTimeEntity {
         return new Token(null, token, TokenType.BEARER, false, false, user);
     }
 
-    public boolean isValid() {
-        return !this.revoked && !this.expired;
-    }
-
     public void revoke() {
         this.revoked = true;
         this.expired = true;
