@@ -52,4 +52,9 @@ public class Token extends BaseTimeEntity {
         this.revoked = false;
         this.expired = false;
     }
+
+    public boolean isValid() {
+        return !this.revoked && !this.expired;
+    }
+
 }

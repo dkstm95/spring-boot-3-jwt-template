@@ -111,7 +111,7 @@
 - Method: `POST`
 - Header
 ```
-Authorization: Bearer {access_token}
+Authorization: Bearer {refresh≈_token}
 ```
 
 <br>

@@ -53,6 +53,9 @@ class RefreshTokenService implements RefreshTokenUseCase {
         if (!validTokenPort.isValidToken(presentedRefreshToken, user.getUsername())) {
             throw new IllegalArgumentException("Invalid refresh token.");
         }
+        if (!token.isValid()) {
+            throw new IllegalArgumentException("Invalid refresh token.");
+        }
     }
 
     private User getUserFromToken(String jwt) {
