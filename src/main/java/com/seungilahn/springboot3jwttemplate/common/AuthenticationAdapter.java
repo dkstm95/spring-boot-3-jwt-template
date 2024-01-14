@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface TokenAdapter {
+public @interface AuthenticationAdapter {
 
   /**
    * The value may indicate a suggestion for a logical component name,

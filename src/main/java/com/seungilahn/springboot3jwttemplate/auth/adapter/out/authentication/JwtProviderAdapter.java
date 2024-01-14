@@ -1,9 +1,7 @@
-package com.seungilahn.springboot3jwttemplate.auth.adapter.out.token;
+package com.seungilahn.springboot3jwttemplate.auth.adapter.out.authentication;
 
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.ExtractUsernamePort;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.GenerateTokenPort;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.ValidTokenPort;
-import com.seungilahn.springboot3jwttemplate.common.TokenAdapter;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
+import com.seungilahn.springboot3jwttemplate.common.AuthenticationAdapter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@TokenAdapter
-class JsonWebTokenAdapter implements GenerateTokenPort, ExtractUsernamePort, ValidTokenPort {
+@AuthenticationAdapter
+class JwtProviderAdapter implements TokenProviderPort {
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
@@ -30,19 +28,19 @@ class JsonWebTokenAdapter implements GenerateTokenPort, ExtractUsernamePort, Val
     private long refreshExpiration;
 
     @Override
-    public String generateAccessToken(String username) {
-        return buildToken(new HashMap<>(), username, jwtExpiration);
+    public String generateAccessToken(String email) {
+        return buildToken(new HashMap<>(), email, jwtExpiration);
     }
 
     @Override
-    public String generateRefreshToken(String username) {
-        return buildToken(new HashMap<>(), username, refreshExpiration);
+    public String generateRefreshToken(String email) {
+        return buildToken(new HashMap<>(), email, refreshExpiration);
     }
 
-    private String buildToken(Map<String, Object> extraClaims, String username, long expiration) {
+    private String buildToken(Map<String, Object> extraClaims, String email, long expiration) {
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -55,7 +53,7 @@ class JsonWebTokenAdapter implements GenerateTokenPort, ExtractUsernamePort, Val
     }
 
     @Override
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -73,9 +71,9 @@ class JsonWebTokenAdapter implements GenerateTokenPort, ExtractUsernamePort, Val
     }
 
     @Override
-    public boolean isValidToken(String token, String username) {
-        String extractUsername = extractUsername(token);
-        return (extractUsername.equals(username)) && !isTokenExpired(token);
+    public boolean isValidToken(String token, String email) {
+        String extractEmail = extractEmail(token);
+        return (extractEmail.equals(email)) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

@@ -1,8 +1,8 @@
 package com.seungilahn.springboot3jwttemplate.configuration;
 
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.ExtractUsernamePort;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.ValidTokenPort;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
+import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
+import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,11 +21,8 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final LoadTokenPort loadTokenPort;
-    private final ExtractUsernamePort extractUsernamePort;
-    private final ValidTokenPort validTokenPort;
-
-    private final UserDetailsService userDetailsService;
+    private final LoadUserPort loadUserPort;
+    private final TokenProviderPort tokenProviderPort;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -45,14 +40,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String jwt = authHeader.substring(7);
-        String userEmail = extractUsernamePort.extractUsername(jwt);
+        String userEmail = tokenProviderPort.extractEmail(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            if (validTokenPort.isValidToken(jwt, userDetails.getUsername())) {
+            User user = loadUserPort.loadUser(userEmail);
+            if (tokenProviderPort.isValidToken(jwt, user.getEmail())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
+                        user,
                         null,
-                        userDetails.getAuthorities()
+                        null
                 );
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
@@ -63,4 +58,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

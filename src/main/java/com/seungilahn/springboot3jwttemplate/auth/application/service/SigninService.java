@@ -2,15 +2,13 @@ package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninUseCase;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.GenerateTokenPort;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.AuthenticatePort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -19,23 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 class SigninService implements SigninUseCase {
 
     private final LoadTokenPort loadTokenPort;
-    private final GenerateTokenPort generateTokenPort;
-
-    private final AuthenticationManager authenticationManager;
+    private final TokenProviderPort tokenProviderPort;
+    private final AuthenticatePort authenticatePort;
 
     @Override
     public AuthenticationResponse signin(SigninCommand command) {
 
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(command.email(), command.password())
-        );
-
-        User user = (User) authenticate.getPrincipal();
+        User user = authenticatePort.authenticate(command.email(), command.password());
 
         Token token = loadTokenPort.loadToken(user.getId());
 
-        String accessToken = generateTokenPort.generateAccessToken(user.getUsername());
-        String refreshToken = generateTokenPort.generateRefreshToken(user.getUsername());
+        String accessToken = tokenProviderPort.generateAccessToken(user.getEmail());
+        String refreshToken = tokenProviderPort.generateRefreshToken(user.getEmail());
 
         token.refresh(refreshToken);
 

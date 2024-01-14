@@ -2,10 +2,8 @@ package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.RefreshTokenCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.RefreshTokenUseCase;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.ExtractUsernamePort;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.GenerateTokenPort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.ValidTokenPort;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
@@ -21,9 +19,7 @@ import java.util.Optional;
 class RefreshTokenService implements RefreshTokenUseCase {
 
     private final LoadTokenPort loadTokenPort;
-    private final GenerateTokenPort generateTokenPort;
-    private final ExtractUsernamePort extractUsernamePort;
-    private final ValidTokenPort validTokenPort;
+    private final TokenProviderPort tokenProviderPort;
 
     private final LoadUserPort loadUserPort;
 
@@ -38,8 +34,8 @@ class RefreshTokenService implements RefreshTokenUseCase {
 
         validateRefreshToken(presentedRefreshToken, token, user);
 
-        String accessToken = generateTokenPort.generateAccessToken(user.getUsername());
-        String refreshToken = generateTokenPort.generateRefreshToken(user.getUsername());
+        String accessToken = tokenProviderPort.generateAccessToken(user.getEmail());
+        String refreshToken = tokenProviderPort.generateRefreshToken(user.getEmail());
 
         token.refresh(refreshToken);
 
@@ -50,7 +46,7 @@ class RefreshTokenService implements RefreshTokenUseCase {
         if (!token.isSameRefreshToken(presentedRefreshToken)) {
             throw new IllegalArgumentException("Invalid refresh token.");
         }
-        if (!validTokenPort.isValidToken(presentedRefreshToken, user.getUsername())) {
+        if (!tokenProviderPort.isValidToken(presentedRefreshToken, user.getEmail())) {
             throw new IllegalArgumentException("Invalid refresh token.");
         }
         if (!token.isValid()) {
@@ -59,7 +55,7 @@ class RefreshTokenService implements RefreshTokenUseCase {
     }
 
     private User getUserFromToken(String jwt) {
-        String userEmail = Optional.ofNullable(extractUsernamePort.extractUsername(jwt))
+        String userEmail = Optional.ofNullable(tokenProviderPort.extractEmail(jwt))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token."));
 
         return loadUserPort.loadUser(userEmail);

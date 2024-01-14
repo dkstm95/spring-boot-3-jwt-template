@@ -36,10 +36,10 @@
 
 ## DB
 ### BaseTimeEntity
-| Column | Type      | Description |
-|--------|-----------|-------------|
-| created_at | timestamp | 생성 일시      |
-| updated_at | timestamp | 수정 일시      |
+| Column     | Type      | Description |
+|------------|-----------|-------------|
+| created_at | timestamp | 생성 일시       |
+| updated_at | timestamp | 수정 일시       |
 
 ### User
 | Column       | Type         | Description      |
@@ -109,9 +109,11 @@
 ### 로그아웃
 - URL: `/api/v1/auth/signout`
 - Method: `POST`
-- Header
-```
-Authorization: Bearer {refresh≈_token}
+- Request
+```json
+{
+  "refresh_token": ".."
+}
 ```
 
 <br>
