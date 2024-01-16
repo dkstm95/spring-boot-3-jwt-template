@@ -1,16 +1,17 @@
 package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
+import com.seungilahn.springboot3jwttemplate.auth.application.port.in.AuthenticationResponse;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SignupCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SignupUseCase;
-import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordEncoderPort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.SaveTokenPort;
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.SaveUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ class SignupService implements SignupUseCase {
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderPort passwordEncoderPort;
 
     @Override
     public AuthenticationResponse signup(SignupCommand command) {
@@ -34,7 +35,7 @@ class SignupService implements SignupUseCase {
                 command.email(),
                 command.name(),
                 command.phoneNumber(),
-                passwordEncoder.encode(command.password()),
+                passwordEncoderPort.encode(command.password()),
                 command.role()
         );
         User savedUser = saveUserPort.saveUser(newUser);

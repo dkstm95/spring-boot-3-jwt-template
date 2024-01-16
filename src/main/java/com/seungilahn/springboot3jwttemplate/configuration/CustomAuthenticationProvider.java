@@ -1,5 +1,6 @@
 package com.seungilahn.springboot3jwttemplate.configuration;
 
+import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordEncoderPort;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final LoadUserPort loadUserPort;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderPort passwordEncoderPort;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -26,7 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         User user = loadUserPort.findUser(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoderPort.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 

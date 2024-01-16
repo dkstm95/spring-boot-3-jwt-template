@@ -1,5 +1,6 @@
 package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
+import com.seungilahn.springboot3jwttemplate.auth.application.port.in.AuthenticationResponse;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.RefreshTokenCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.RefreshTokenUseCase;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;

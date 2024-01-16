@@ -1,5 +1,6 @@
 package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
+import com.seungilahn.springboot3jwttemplate.auth.application.port.in.AuthenticationResponse;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninUseCase;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.AuthenticatePort;
