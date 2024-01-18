@@ -3,7 +3,7 @@ package com.seungilahn.springboot3jwttemplate.user.domain;
 import com.seungilahn.springboot3jwttemplate.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 public class User extends BaseTimeEntity {
 
@@ -40,25 +41,18 @@ public class User extends BaseTimeEntity {
 
     private boolean enabled;
 
-    @Builder(access = AccessLevel.PRIVATE)
-    private User(String email, String name, String phoneNumber, String password, Role role, boolean enabled) {
-        this.email = email;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.role = role;
-        this.enabled = enabled;
+    /**
+     * Creates an {@link User} entity without an ID. Use to create a new entity that is not yet persisted.
+     */
+    public static User withoutId(String email, String name, String phoneNumber, String password, Role role) {
+        return new User(null, email, name, phoneNumber, password, role, true);
     }
 
-    public static User create(String email, String name, String phoneNumber, String password, Role role) {
-        return User.builder()
-                .email(email)
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .password(password)
-                .role(role)
-                .enabled(true)
-                .build();
+    /**
+     * Creates an {@link User} entity with an ID. Use to reconstitute a persisted entity.
+     */
+    public static User withId(Long id, String email, String name, String phoneNumber, String password, Role role) {
+        return new User(id, email, name, phoneNumber, password, role, true);
     }
 
     public void changeUserInfo(String name, String phoneNumber) {

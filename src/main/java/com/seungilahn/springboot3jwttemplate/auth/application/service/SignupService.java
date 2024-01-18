@@ -7,6 +7,7 @@ import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordE
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.SaveTokenPort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
+import com.seungilahn.springboot3jwttemplate.auth.domain.TokenType;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.SaveUserPort;
@@ -31,7 +32,7 @@ class SignupService implements SignupUseCase {
 
         validateEmail(command.email());
 
-        User newUser = User.create(
+        User newUser = User.withoutId(
                 command.email(),
                 command.name(),
                 command.phoneNumber(),
@@ -42,8 +43,7 @@ class SignupService implements SignupUseCase {
 
         String accessToken = tokenProviderPort.generateAccessToken(newUser.getEmail());
         String refreshToken = tokenProviderPort.generateRefreshToken(newUser.getEmail());
-
-        Token token = Token.createBearerToken(accessToken, savedUser);
+        Token token = Token.withoutId(accessToken, savedUser, TokenType.BEARER);
         saveTokenPort.saveToken(token);
 
         return new AuthenticationResponse(accessToken, refreshToken);

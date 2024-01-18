@@ -34,8 +34,18 @@ public class Token extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public static Token createBearerToken(String token, User user) {
-        return new Token(null, token, TokenType.BEARER, false, false, user);
+    /**
+     * Creates an {@link Token} entity without an ID. Use to create a new entity that is not yet persisted.
+     */
+    public static Token withoutId(String token, User user, TokenType tokenType) {
+        return new Token(null, token, tokenType, false, false, user);
+    }
+
+    /**
+     * Creates an {@link Token} entity with an ID. Use to reconstitute a persisted entity.
+     */
+    public static Token withId(Long id, String token, User user, TokenType tokenType) {
+        return new Token(id, token, tokenType, false, false, user);
     }
 
     public void revoke() {
