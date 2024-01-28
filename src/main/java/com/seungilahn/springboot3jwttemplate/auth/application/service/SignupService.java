@@ -37,7 +37,8 @@ class SignupService implements SignupUseCase {
                 command.name(),
                 command.phoneNumber(),
                 passwordEncoderPort.encode(command.password()),
-                command.role()
+                command.role(),
+                true
         );
         User savedUser = saveUserPort.saveUser(newUser);
 

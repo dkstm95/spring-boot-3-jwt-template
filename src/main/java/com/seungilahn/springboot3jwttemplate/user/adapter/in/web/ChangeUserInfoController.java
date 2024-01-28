@@ -1,6 +1,7 @@
 package com.seungilahn.springboot3jwttemplate.user.adapter.in.web;
 
 import com.seungilahn.springboot3jwttemplate.common.LoginUser;
+import com.seungilahn.springboot3jwttemplate.common.WebAdapter;
 import com.seungilahn.springboot3jwttemplate.user.application.port.in.ChangeUserInfoUseCase;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@WebAdapter
 @PreAuthorize("hasRole('USER')")
 class ChangeUserInfoController {
 

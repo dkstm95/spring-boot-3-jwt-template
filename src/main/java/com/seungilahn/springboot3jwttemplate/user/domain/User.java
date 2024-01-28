@@ -44,15 +44,15 @@ public class User extends BaseTimeEntity {
     /**
      * Creates an {@link User} entity without an ID. Use to create a new entity that is not yet persisted.
      */
-    public static User withoutId(String email, String name, String phoneNumber, String password, Role role) {
-        return new User(null, email, name, phoneNumber, password, role, true);
+    public static User withoutId(String email, String name, String phoneNumber, String password, Role role, boolean enabled) {
+        return new User(null, email, name, phoneNumber, password, role, enabled);
     }
 
     /**
      * Creates an {@link User} entity with an ID. Use to reconstitute a persisted entity.
      */
-    public static User withId(Long id, String email, String name, String phoneNumber, String password, Role role) {
-        return new User(id, email, name, phoneNumber, password, role, true);
+    public static User withId(Long id, String email, String name, String phoneNumber, String password, Role role, boolean enabled) {
+        return new User(id, email, name, phoneNumber, password, role, enabled);
     }
 
     public void changeUserInfo(String name, String phoneNumber) {
