@@ -1,6 +1,6 @@
 ## Reference
 - https://github.com/ali-bouali/spring-boot-3-jwt-security
-- 만들면서 배우는 클린 아키텍처
+- (book) 만들면서 배우는 클린 아키텍처
 
 ## 기술 스택
 - `Java 17`
