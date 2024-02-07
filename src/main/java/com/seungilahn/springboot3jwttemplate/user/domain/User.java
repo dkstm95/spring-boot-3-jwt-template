@@ -12,26 +12,23 @@ import java.util.Collection;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 @Entity
 public class User extends BaseTimeEntity {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
     @Column(unique = true, nullable = false, length=30)
     private String email;
 
-    @Getter
     @Column(nullable = false, length = 30)
     private String name;
 
     @Column(nullable = false, length = 30)
     private String phoneNumber;
 
-    @Getter
     @Column(nullable = false, length = 100)
     private String password;
 
@@ -61,9 +58,10 @@ public class User extends BaseTimeEntity {
     }
 
     public void withdraw() {
-        this.name = "withdraw";
-        this.phoneNumber = "withdraw";
-        this.password = "withdraw";
+        this.email = "withdrawn";
+        this.name = "withdrawn";
+        this.phoneNumber = "withdrawn";
+        this.password = "withdrawn";
         this.enabled = false;
     }
 

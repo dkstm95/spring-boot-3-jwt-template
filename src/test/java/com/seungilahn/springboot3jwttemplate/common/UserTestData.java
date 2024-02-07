@@ -5,7 +5,7 @@ import com.seungilahn.springboot3jwttemplate.user.domain.User;
 
 public class UserTestData {
 
-    public static User defaultUser() {
+    public static UserTestDataBuilder defaultUser() {
         return new UserTestDataBuilder()
                 .withId(1L)
                 .withEmail("example@gmail.com")
@@ -13,8 +13,7 @@ public class UserTestData {
                 .withPhoneNumber("01012345678")
                 .withPassword("password")
                 .withRole(Role.USER)
-                .withEnabled(true)
-                .build();
+                .withEnabled(true);
     }
 
     public static class UserTestDataBuilder {

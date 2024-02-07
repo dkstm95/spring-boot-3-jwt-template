@@ -16,6 +16,7 @@ class WithdrawUserService implements WithdrawUserUseCase {
 
     @Override
     public void withdraw(User user) {
+        // TODO: Backup user data before withdrawal
         user.withdraw();
         saveUserPort.saveUser(user);
     }
