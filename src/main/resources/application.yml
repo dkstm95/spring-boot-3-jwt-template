@@ -1,6 +1,10 @@
+server:
+  port: 8080
+
 spring:
   profiles:
     include: auth
+
   datasource:
     driver-class-name: org.h2.Driver
 #    driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,19 +15,18 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
   jpa:
-    show-sql: true
+    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
-      format_sql: true
       hibernate:
 #        dialect: org.hibernate.dialect.MySQLDialect
         storage_engine: innodb
         globally_quoted_identifiers: true
+        show_sql: true
+        format_sql: true
+
   jackson:
     property-naming-strategy: SNAKE_CASE
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
