@@ -20,20 +20,15 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length=30)
     private String email;
 
-    @Column(nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false, length = 30)
     private String phoneNumber;
 
-    @Column(nullable = false, length = 100)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private Role role;
 
     private boolean enabled;

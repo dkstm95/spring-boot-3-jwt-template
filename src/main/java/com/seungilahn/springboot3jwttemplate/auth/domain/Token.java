@@ -18,11 +18,9 @@ public class Token extends BaseTimeEntity {
     private Long id;
 
     @Getter
-    @Column(unique = true)
     private String token;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private TokenType tokenType;
 
     private boolean revoked;
