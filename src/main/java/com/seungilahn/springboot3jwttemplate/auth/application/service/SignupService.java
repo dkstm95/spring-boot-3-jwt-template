@@ -36,17 +36,17 @@ class SignupService implements SignupUseCase {
     @Override
     public AuthenticationResponse signup(SignupCommand command) {
 
-        validateEmailIsNotInUse(command.email());
+        validateEmailIsNotInUse(command);
 
         User savedUser = createUserAndSave(command);
 
-        AuthenticationTokens tokens = generateTokensAndSave(command.email(), savedUser);
+        AuthenticationTokens tokens = generateTokensAndSave(command, savedUser);
 
         return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
     }
 
-    private void validateEmailIsNotInUse(String email) {
-        if (loadUserPort.findUser(email).isPresent()) {
+    private void validateEmailIsNotInUse(SignupCommand command) {
+        if (loadUserPort.findUser(command.email()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
     }
@@ -63,8 +63,8 @@ class SignupService implements SignupUseCase {
         return saveUserPort.saveUser(newUser);
     }
 
-    private AuthenticationTokens generateTokensAndSave(String email, User savedUser) {
-        AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(email);
+    private AuthenticationTokens generateTokensAndSave(SignupCommand command, User savedUser) {
+        AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(command.email());
         Token token = Token.withoutId(savedUser.getId(), tokens.accessToken(), TokenType.BEARER, false, false);
         saveTokenPort.saveToken(token);
         return tokens;
