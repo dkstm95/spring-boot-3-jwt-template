@@ -20,7 +20,6 @@ class RefreshTokenService implements RefreshTokenUseCase {
 
     private final LoadTokenPort loadTokenPort;
     private final TokenProviderPort tokenProviderPort;
-
     private final LoadUserPort loadUserPort;
 
     RefreshTokenService(LoadTokenPort loadTokenPort, TokenProviderPort tokenProviderPort, LoadUserPort loadUserPort) {
@@ -32,13 +31,11 @@ class RefreshTokenService implements RefreshTokenUseCase {
     @Override
     public AuthenticationResponse tokenRefresh(RefreshTokenCommand command) {
 
-        String presentedRefreshToken = command.refreshToken();
-
-        User user = getUserFromToken(presentedRefreshToken);
+        User user = loadUserFromToken(command.refreshToken());
 
         Token token = loadTokenPort.loadToken(user.getId());
 
-        validateRefreshToken(presentedRefreshToken, token, user);
+        validateRefreshToken(command.refreshToken(), token, user);
 
         AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(user.getEmail());
 
@@ -47,23 +44,18 @@ class RefreshTokenService implements RefreshTokenUseCase {
         return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
     }
 
-    private void validateRefreshToken(String presentedRefreshToken, Token token, User user) {
-        if (!token.isSameRefreshToken(presentedRefreshToken)) {
-            throw new IllegalArgumentException("Invalid refresh token.");
-        }
-        if (!tokenProviderPort.isValidToken(presentedRefreshToken, user.getEmail())) {
-            throw new IllegalArgumentException("Invalid refresh token.");
-        }
-        if (!token.isValid()) {
-            throw new IllegalArgumentException("Invalid refresh token.");
-        }
-    }
-
-    private User getUserFromToken(String jwt) {
+    private User loadUserFromToken(String jwt) {
         String userEmail = Optional.ofNullable(tokenProviderPort.extractEmail(jwt))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token."));
-
         return loadUserPort.loadUser(userEmail);
+    }
+
+    private void validateRefreshToken(String oldRefreshToken, Token token, User user) {
+        if (!token.isSameRefreshToken(oldRefreshToken) ||
+                !token.isValid() ||
+                !tokenProviderPort.isValidToken(oldRefreshToken, user.getEmail())) {
+            throw new IllegalArgumentException("Invalid refresh token.");
+        }
     }
 
 }
