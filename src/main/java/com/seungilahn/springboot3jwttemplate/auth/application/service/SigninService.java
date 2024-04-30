@@ -6,6 +6,7 @@ import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninUseC
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.AuthenticatePort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
+import com.seungilahn.springboot3jwttemplate.auth.domain.AuthenticationTokens;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
@@ -32,12 +33,11 @@ class SigninService implements SigninUseCase {
 
         Token token = loadTokenPort.loadToken(user.getId());
 
-        String accessToken = tokenProviderPort.generateAccessToken(user.getEmail());
-        String refreshToken = tokenProviderPort.generateRefreshToken(user.getEmail());
+        AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(user.getEmail());
 
-        token.refresh(refreshToken);
+        token.refresh(tokens.refreshToken());
 
-        return new AuthenticationResponse(accessToken, refreshToken);
+        return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
     }
 
 }

@@ -6,6 +6,7 @@ import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SignupUseC
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordEncoderPort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.SaveTokenPort;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
+import com.seungilahn.springboot3jwttemplate.auth.domain.AuthenticationTokens;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.auth.domain.TokenType;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
@@ -22,7 +23,6 @@ class SignupService implements SignupUseCase {
     private final TokenProviderPort tokenProviderPort;
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
-
     private final PasswordEncoderPort passwordEncoderPort;
 
     SignupService(SaveTokenPort saveTokenPort, TokenProviderPort tokenProviderPort, LoadUserPort loadUserPort, SaveUserPort saveUserPort, PasswordEncoderPort passwordEncoderPort) {
@@ -36,8 +36,22 @@ class SignupService implements SignupUseCase {
     @Override
     public AuthenticationResponse signup(SignupCommand command) {
 
-        validateEmail(command.email());
+        validateEmailIsNotInUse(command.email());
 
+        User savedUser = createUserAndSave(command);
+
+        AuthenticationTokens tokens = generateTokensAndSave(command.email(), savedUser);
+
+        return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
+    }
+
+    private void validateEmailIsNotInUse(String email) {
+        if (loadUserPort.findUser(email).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
+    }
+
+    private User createUserAndSave(SignupCommand command) {
         User newUser = User.withoutId(
                 command.email(),
                 command.name(),
@@ -46,20 +60,14 @@ class SignupService implements SignupUseCase {
                 command.role(),
                 true
         );
-        User savedUser = saveUserPort.saveUser(newUser);
-
-        String accessToken = tokenProviderPort.generateAccessToken(command.email());
-        String refreshToken = tokenProviderPort.generateRefreshToken(command.email());
-        Token token = Token.withoutId(savedUser.getId(), accessToken, TokenType.BEARER, false, false);
-        saveTokenPort.saveToken(token);
-
-        return new AuthenticationResponse(accessToken, refreshToken);
+        return saveUserPort.saveUser(newUser);
     }
 
-    private void validateEmail(String email) {
-        if (loadUserPort.findUser(email).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-        }
+    private AuthenticationTokens generateTokensAndSave(String email, User savedUser) {
+        AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(email);
+        Token token = Token.withoutId(savedUser.getId(), tokens.accessToken(), TokenType.BEARER, false, false);
+        saveTokenPort.saveToken(token);
+        return tokens;
     }
 
 }

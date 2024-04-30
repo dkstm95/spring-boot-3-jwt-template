@@ -1,6 +1,7 @@
 package com.seungilahn.springboot3jwttemplate.auth.adapter.out.authentication;
 
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProviderPort;
+import com.seungilahn.springboot3jwttemplate.auth.domain.AuthenticationTokens;
 import com.seungilahn.springboot3jwttemplate.common.AuthenticationAdapter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,12 +29,17 @@ class JwtProviderAdapter implements TokenProviderPort {
     private long refreshExpiration;
 
     @Override
-    public String generateAccessToken(String email) {
+    public AuthenticationTokens generateAuthenticationTokens(String email) {
+        String accessToken = generateAccessToken(email);
+        String refreshToken = generateRefreshToken(email);
+        return new AuthenticationTokens(accessToken, refreshToken);
+    }
+
+    private String generateAccessToken(String email) {
         return buildToken(new HashMap<>(), email, jwtExpiration);
     }
 
-    @Override
-    public String generateRefreshToken(String email) {
+    private String generateRefreshToken(String email) {
         return buildToken(new HashMap<>(), email, refreshExpiration);
     }
 
