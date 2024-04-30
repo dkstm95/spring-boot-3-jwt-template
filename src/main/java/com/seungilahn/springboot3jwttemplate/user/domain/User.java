@@ -61,8 +61,25 @@ public class User extends BaseTimeEntity {
         return email;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+
+    public Role getRole() {
+        return role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void changeUserInfo(String name, String phoneNumber) {
