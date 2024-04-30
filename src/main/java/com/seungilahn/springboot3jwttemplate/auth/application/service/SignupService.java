@@ -1,6 +1,5 @@
 package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
-import com.seungilahn.springboot3jwttemplate.auth.application.port.in.AuthenticationResponse;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SignupCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SignupUseCase;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordEncoderPort;
@@ -34,15 +33,17 @@ class SignupService implements SignupUseCase {
     }
 
     @Override
-    public AuthenticationResponse signup(SignupCommand command) {
+    public AuthenticationTokens signup(SignupCommand command) {
 
         validateEmailIsNotInUse(command);
 
         User savedUser = createUserAndSave(command);
 
-        AuthenticationTokens tokens = generateTokensAndSave(command, savedUser);
+        AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(command.email());
 
-        return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
+        generateTokensAndSave(tokens, savedUser);
+
+        return tokens;
     }
 
     private void validateEmailIsNotInUse(SignupCommand command) {
@@ -63,11 +64,9 @@ class SignupService implements SignupUseCase {
         return saveUserPort.saveUser(newUser);
     }
 
-    private AuthenticationTokens generateTokensAndSave(SignupCommand command, User savedUser) {
-        AuthenticationTokens tokens = tokenProviderPort.generateAuthenticationTokens(command.email());
+    private void generateTokensAndSave(AuthenticationTokens tokens, User savedUser) {
         Token token = Token.withoutId(savedUser.getId(), tokens.accessToken(), TokenType.BEARER, false, false);
         saveTokenPort.saveToken(token);
-        return tokens;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
-import com.seungilahn.springboot3jwttemplate.auth.application.port.in.AuthenticationResponse;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SigninUseCase;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.AuthenticatePort;
@@ -27,7 +26,7 @@ class SigninService implements SigninUseCase {
     }
 
     @Override
-    public AuthenticationResponse signin(SigninCommand command) {
+    public AuthenticationTokens signin(SigninCommand command) {
 
         User user = authenticatePort.authenticate(command.email(), command.password());
 
@@ -37,7 +36,7 @@ class SigninService implements SigninUseCase {
 
         token.refresh(tokens.refreshToken());
 
-        return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
+        return tokens;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.seungilahn.springboot3jwttemplate.auth.application.service;
 
-import com.seungilahn.springboot3jwttemplate.auth.application.port.in.AuthenticationResponse;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.RefreshTokenCommand;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.in.RefreshTokenUseCase;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;
@@ -29,7 +28,7 @@ class RefreshTokenService implements RefreshTokenUseCase {
     }
 
     @Override
-    public AuthenticationResponse tokenRefresh(RefreshTokenCommand command) {
+    public AuthenticationTokens tokenRefresh(RefreshTokenCommand command) {
 
         User user = loadUserFromToken(command.refreshToken());
 
@@ -41,7 +40,7 @@ class RefreshTokenService implements RefreshTokenUseCase {
 
         token.refresh(tokens.refreshToken());
 
-        return new AuthenticationResponse(tokens.accessToken(), tokens.refreshToken());
+        return tokens;
     }
 
     private User loadUserFromToken(String jwt) {
