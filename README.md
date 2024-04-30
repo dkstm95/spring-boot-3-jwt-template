@@ -33,35 +33,17 @@
 │   │   │               └── domain
 ```
 
-## DB
-### BaseTimeEntity
-| Column     | Type      | Description |
-|------------|-----------|-------------|
-| created_at | timestamp | 생성 일시       |
-| updated_at | timestamp | 수정 일시       |
-
-### User
-| Column       | Type         | Description      |
-|--------------|--------------|------------------|
-| id           | bigint       | PK               |
-| email        | varchar(30)  | 이메일              |
-| name         | varchar(30)  | 이름               |
-| phone_number | varchar(30)  | 휴대번호             |
-| password     | varchar(100) | 비밀번호             |
-| role         | varchar(10)  | 권한(USER / ADMIN) |
-| enabled      | tinyint(1)   | 계정 활성화 여부        |
-
-### Token
-| Column     | Type         | Description |
-|------------|--------------|-------------|
-| id         | bigint       | PK          |
-| token      | varchar(255) | 토큰          |
-| token_type | varchar(10)  | 토큰 타입       |
-| revoked    | tinyint(1)   | 토큰 취소 여부    |
-| expired    | tinyint(1)   | 토큰 만료 여부    |
-| user_id    | bigint       | FK          |
-
 ## API
+### 공통 응답
+- Response
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {}
+}
+```
+
 ### 회원가입
 - URL: `/api/v1/signup`
 - Method: `POST`
