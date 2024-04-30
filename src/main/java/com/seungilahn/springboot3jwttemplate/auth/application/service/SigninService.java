@@ -9,10 +9,8 @@ import com.seungilahn.springboot3jwttemplate.auth.application.port.out.TokenProv
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @UseCase
 @Transactional
 class SigninService implements SigninUseCase {
@@ -20,6 +18,12 @@ class SigninService implements SigninUseCase {
     private final LoadTokenPort loadTokenPort;
     private final TokenProviderPort tokenProviderPort;
     private final AuthenticatePort authenticatePort;
+
+    SigninService(LoadTokenPort loadTokenPort, TokenProviderPort tokenProviderPort, AuthenticatePort authenticatePort) {
+        this.loadTokenPort = loadTokenPort;
+        this.tokenProviderPort = tokenProviderPort;
+        this.authenticatePort = authenticatePort;
+    }
 
     @Override
     public AuthenticationResponse signin(SigninCommand command) {

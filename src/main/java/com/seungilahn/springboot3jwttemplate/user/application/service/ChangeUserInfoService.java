@@ -5,15 +5,17 @@ import com.seungilahn.springboot3jwttemplate.user.application.port.in.ChangeUser
 import com.seungilahn.springboot3jwttemplate.user.application.port.in.ChangeUserInfoUseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.SaveUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @UseCase
 @Transactional
 class ChangeUserInfoService implements ChangeUserInfoUseCase {
 
     private final SaveUserPort saveUserPort;
+
+    ChangeUserInfoService(SaveUserPort saveUserPort) {
+        this.saveUserPort = saveUserPort;
+    }
 
     @Override
     public void changeUserInfo(User user, ChangeUserInfoCommand command) {

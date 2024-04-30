@@ -12,10 +12,8 @@ import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.SaveUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @UseCase
 @Transactional
 class SignupService implements SignupUseCase {
@@ -26,6 +24,14 @@ class SignupService implements SignupUseCase {
     private final SaveUserPort saveUserPort;
 
     private final PasswordEncoderPort passwordEncoderPort;
+
+    SignupService(SaveTokenPort saveTokenPort, TokenProviderPort tokenProviderPort, LoadUserPort loadUserPort, SaveUserPort saveUserPort, PasswordEncoderPort passwordEncoderPort) {
+        this.saveTokenPort = saveTokenPort;
+        this.tokenProviderPort = tokenProviderPort;
+        this.loadUserPort = loadUserPort;
+        this.saveUserPort = saveUserPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+    }
 
     @Override
     public AuthenticationResponse signup(SignupCommand command) {
@@ -42,9 +48,9 @@ class SignupService implements SignupUseCase {
         );
         User savedUser = saveUserPort.saveUser(newUser);
 
-        String accessToken = tokenProviderPort.generateAccessToken(newUser.getEmail());
-        String refreshToken = tokenProviderPort.generateRefreshToken(newUser.getEmail());
-        Token token = Token.withoutId(accessToken, savedUser, TokenType.BEARER);
+        String accessToken = tokenProviderPort.generateAccessToken(command.email());
+        String refreshToken = tokenProviderPort.generateRefreshToken(command.email());
+        Token token = Token.withoutId(savedUser.getId(), accessToken, TokenType.BEARER, false, false);
         saveTokenPort.saveToken(token);
 
         return new AuthenticationResponse(accessToken, refreshToken);

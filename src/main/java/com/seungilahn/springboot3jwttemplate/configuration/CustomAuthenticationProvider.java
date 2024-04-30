@@ -3,19 +3,22 @@ package com.seungilahn.springboot3jwttemplate.configuration;
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordEncoderPort;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final LoadUserPort loadUserPort;
     private final PasswordEncoderPort passwordEncoderPort;
+
+    CustomAuthenticationProvider(LoadUserPort loadUserPort, PasswordEncoderPort passwordEncoderPort) {
+        this.loadUserPort = loadUserPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

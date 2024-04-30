@@ -2,14 +2,16 @@ package com.seungilahn.springboot3jwttemplate.auth.adapter.out.authentication;
 
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.PasswordEncoderPort;
 import com.seungilahn.springboot3jwttemplate.common.AuthenticationAdapter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@RequiredArgsConstructor
 @AuthenticationAdapter
 class PasswordEncoderPortAdapter implements PasswordEncoderPort {
 
     private final PasswordEncoder passwordEncoder;
+
+    PasswordEncoderPortAdapter(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public String encode(CharSequence rawPassword) {

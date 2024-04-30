@@ -4,15 +4,17 @@ import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.in.WithdrawUserUseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.SaveUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @UseCase
 @Transactional
 class WithdrawUserService implements WithdrawUserUseCase {
 
     private final SaveUserPort saveUserPort;
+
+    WithdrawUserService(SaveUserPort saveUserPort) {
+        this.saveUserPort = saveUserPort;
+    }
 
     @Override
     public void withdraw(User user) {

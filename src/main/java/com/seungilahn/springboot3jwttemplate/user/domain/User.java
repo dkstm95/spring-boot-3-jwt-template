@@ -2,17 +2,10 @@ package com.seungilahn.springboot3jwttemplate.user.domain;
 
 import com.seungilahn.springboot3jwttemplate.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
 @Entity
 public class User extends BaseTimeEntity {
 
@@ -33,6 +26,19 @@ public class User extends BaseTimeEntity {
 
     private boolean enabled;
 
+    protected User() {
+    }
+
+    private User(Long id, String email, String name, String phoneNumber, String password, Role role, boolean enabled) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.role = role;
+        this.enabled = enabled;
+    }
+
     /**
      * Creates an {@link User} entity without an ID. Use to create a new entity that is not yet persisted.
      */
@@ -45,6 +51,18 @@ public class User extends BaseTimeEntity {
      */
     public static User withId(Long id, String email, String name, String phoneNumber, String password, Role role, boolean enabled) {
         return new User(id, email, name, phoneNumber, password, role, enabled);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void changeUserInfo(String name, String phoneNumber) {

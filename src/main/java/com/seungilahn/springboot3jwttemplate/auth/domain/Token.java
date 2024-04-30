@@ -1,15 +1,8 @@
 package com.seungilahn.springboot3jwttemplate.auth.domain;
 
 import com.seungilahn.springboot3jwttemplate.common.BaseTimeEntity;
-import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 public class Token extends BaseTimeEntity {
 
@@ -17,7 +10,8 @@ public class Token extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
+    private Long userId;
+
     private String token;
 
     @Enumerated(EnumType.STRING)
@@ -27,23 +21,29 @@ public class Token extends BaseTimeEntity {
 
     private boolean expired;
 
-    @Getter
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    protected Token() { }
+
+    private Token(Long id, Long userId, String token, TokenType tokenType, boolean revoked, boolean expired) {
+        this.id = id;
+        this.userId = userId;
+        this.token = token;
+        this.tokenType = tokenType;
+        this.revoked = revoked;
+        this.expired = expired;
+    }
 
     /**
      * Creates an {@link Token} entity without an ID. Use to create a new entity that is not yet persisted.
      */
-    public static Token withoutId(String token, User user, TokenType tokenType) {
-        return new Token(null, token, tokenType, false, false, user);
+    public static Token withoutId(Long userId, String token, TokenType tokenType, boolean revoked, boolean expired) {
+        return new Token(null, userId, token, tokenType, revoked, expired);
     }
 
     /**
      * Creates an {@link Token} entity with an ID. Use to reconstitute a persisted entity.
      */
-    public static Token withId(Long id, String token, User user, TokenType tokenType) {
-        return new Token(id, token, tokenType, false, false, user);
+    public static Token withId(Long id, Long userId, String token, TokenType tokenType, boolean revoked, boolean expired) {
+        return new Token(id, userId, token, tokenType, revoked, expired);
     }
 
     public void revoke() {

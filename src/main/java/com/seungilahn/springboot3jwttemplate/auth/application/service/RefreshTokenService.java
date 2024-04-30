@@ -9,12 +9,10 @@ import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @UseCase
 @Transactional
 class RefreshTokenService implements RefreshTokenUseCase {
@@ -23,6 +21,12 @@ class RefreshTokenService implements RefreshTokenUseCase {
     private final TokenProviderPort tokenProviderPort;
 
     private final LoadUserPort loadUserPort;
+
+    RefreshTokenService(LoadTokenPort loadTokenPort, TokenProviderPort tokenProviderPort, LoadUserPort loadUserPort) {
+        this.loadTokenPort = loadTokenPort;
+        this.tokenProviderPort = tokenProviderPort;
+        this.loadUserPort = loadUserPort;
+    }
 
     @Override
     public AuthenticationResponse tokenRefresh(RefreshTokenCommand command) {

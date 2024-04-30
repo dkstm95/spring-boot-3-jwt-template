@@ -5,15 +5,17 @@ import com.seungilahn.springboot3jwttemplate.auth.application.port.in.SignoutUse
 import com.seungilahn.springboot3jwttemplate.auth.application.port.out.LoadTokenPort;
 import com.seungilahn.springboot3jwttemplate.auth.domain.Token;
 import com.seungilahn.springboot3jwttemplate.common.UseCase;
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @UseCase
 @Transactional
 class SignoutService implements SignoutUseCase {
 
     private final LoadTokenPort loadTokenPort;
+
+    SignoutService(LoadTokenPort loadTokenPort) {
+        this.loadTokenPort = loadTokenPort;
+    }
 
     @Override
     public void signout(SignoutCommand command) {

@@ -5,15 +5,17 @@ import com.seungilahn.springboot3jwttemplate.user.application.port.out.LoadUserP
 import com.seungilahn.springboot3jwttemplate.user.application.port.out.SaveUserPort;
 import com.seungilahn.springboot3jwttemplate.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @PersistenceAdapter
 class UserPersistenceAdapter implements LoadUserPort, SaveUserPort {
 
     private final SpringDataUserRepository userRepository;
+
+    UserPersistenceAdapter(SpringDataUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public Optional<User> findUser(String email) {

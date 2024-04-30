@@ -8,7 +8,6 @@
 - `Spring Boot 3.2.0`
 - `Spring Data JPA`
 - `Spring Security`
-- `Lombok`
 - `jsonwebtoken`
 - `H2 Database`
 
