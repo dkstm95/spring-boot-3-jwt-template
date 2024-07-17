@@ -17,9 +17,9 @@ public class Token extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
 
-    private boolean revoked;
+    private Boolean revoked;
 
-    private boolean expired;
+    private Boolean expired;
 
     protected Token() { }
 
